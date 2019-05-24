@@ -7,7 +7,12 @@ class SPlannerPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('SPlanner'),
+          title: Row(
+            children: <Widget>[
+              Icon(Icons.calendar_today),
+              Text('  SPlanner')
+            ],
+          ),
         ),
         drawer: AppDrawer(),
         body: SPlanner(),

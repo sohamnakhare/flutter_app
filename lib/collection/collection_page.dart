@@ -7,8 +7,12 @@ class CollectionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Collection'),
-        ),
+            title: Row(
+          children: <Widget>[
+            Icon(Icons.credit_card),
+            Text('  Collection'),
+          ],
+        )),
         drawer: AppDrawer(),
         body: Collection(),
         bottomNavigationBar: BottomAppBar(

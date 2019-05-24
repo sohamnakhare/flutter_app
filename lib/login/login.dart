@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../splanner/s_planner_page.dart';
+
 class Login extends StatefulWidget {
   @override
   _LoginState createState() {
@@ -8,8 +9,7 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
+    final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -21,14 +21,6 @@ class _LoginState extends State<Login> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              TextFormField(
-                  decoration: InputDecoration(labelText: "Username"),
-                  controller: _usernameController,
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter your username';
-                    }
-                  }),
               TextFormField(
                   obscureText: true,
                   controller: _passwordController,
@@ -51,13 +43,17 @@ class _LoginState extends State<Login> {
                               // Validate will return true if the form is valid, or false if
                               // the form is invalid.
                               if (_formKey.currentState.validate()) {
-                                _usernameController.text == 'admin' && _passwordController.text == 'admin' ?
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => SPlannerPage()),
-                                ):
-                                Scaffold.of(context).showSnackBar(
-                                    SnackBar(content: Text('Invalid username password')));
+                                _passwordController.text == '1234'
+                                    ? Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                SPlannerPage()),
+                                      )
+                                    : Scaffold.of(context).showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                'Invalid password')));
                               }
                             },
                             child: Text('Login'),

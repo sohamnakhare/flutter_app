@@ -1,21 +1,49 @@
 import 'package:flutter/material.dart';
-import '../model/SPlannerUserVM.dart';
+import '../../model/User.dart';
 
-class SSchedule extends StatelessWidget {
+class SSchedule extends StatefulWidget {
+  @override
+  _SScheduleState createState() {
+    return _SScheduleState();
+  }
+}
+
+class _SScheduleState extends State<SSchedule> {
+  List<User> users;
+
+  @override
+  void initState() {
+    super.initState();
+    users = User.getUsers();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Column(
+      children: <Widget>[
+        _TimeFilter(),
+        Expanded(
+          child: _ScheduleUserList(this.users),
+        )
+      ],
+    );
+  }
+}
+
+class _TimeFilter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Expanded(
               child: Container(
                 color: Colors.yellow[800],
                 height: kToolbarHeight,
-                alignment: Alignment.center,
                 child: Column(
-                  children: <Widget>[Text("one")],
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[Text("09:00 - 10:00")],
                 ),
               ),
             ),
@@ -24,7 +52,8 @@ class SSchedule extends StatelessWidget {
                 color: Colors.red,
                 height: kToolbarHeight,
                 child: Column(
-                  children: <Widget>[Text("two")],
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[Text("10:00 - 11:00")],
                 ),
               ),
             ),
@@ -33,7 +62,8 @@ class SSchedule extends StatelessWidget {
                 color: Colors.green,
                 height: kToolbarHeight,
                 child: Column(
-                  children: <Widget>[Text("three")],
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[Text("11:00 - 12:00")],
                 ),
               ),
             ),
@@ -42,51 +72,34 @@ class SSchedule extends StatelessWidget {
                 color: Colors.yellow[800],
                 height: kToolbarHeight,
                 child: Column(
-                  children: <Widget>[Text("four")],
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[Text("12:00 - 13:00")],
                 ),
               ),
             )
           ],
-        ),
-        Column(
-          children: <Widget>[_SPlanUserList()],
         )
       ],
     );
   }
 }
 
-class _SPlanUserList extends StatefulWidget {
-  @override
-  _SPlanUserListState createState() {
-    return _SPlanUserListState();
-  }
-}
+class _ScheduleUserList extends StatelessWidget {
+  final List<User> users;
+  final ScrollController _controller = new ScrollController();
 
-class _SPlanUserListState extends State<_SPlanUserList> {
-  List<SPlannerVM> userData;
-
-  @override
-  void initState() {
-    super.initState();
-    userData = [
-      SPlannerVM("Piyush", "PUN00000013980802", "Viman Nagar"),
-      SPlannerVM("Piyush", "PUN00000013980802", "Viman Nagar"),
-      SPlannerVM("Piyush", "PUN00000013980802", "Viman Nagar"),
-      SPlannerVM("Piyush", "PUN00000013980802", "Viman Nagar"),
-      SPlannerVM("Piyush", "PUN00000013980802", "Viman Nagar"),
-    ];
-  }
+  _ScheduleUserList(this.users);
 
   @override
   Widget build(BuildContext context) {
-    return userData == null
+    return users == null
         ? _NoDetailsFound()
         : ListView(
             shrinkWrap: true,
+            physics: const AlwaysScrollableScrollPhysics(),
+            controller: _controller,
             padding: const EdgeInsets.all(20.0),
-            children:
-                userData.map((SPlannerVM user) => _UserDetails(user)).toList());
+            children: users.map((User user) => _UserDetails(user)).toList());
   }
 }
 
@@ -97,14 +110,25 @@ class _NoDetailsFound extends StatelessWidget {
   }
 }
 
-class _UserDetails extends StatelessWidget {
-  SPlannerVM user;
+class _UserDetails extends StatefulWidget {
+  final User user;
 
-  _UserDetails(SPlannerVM user) {
-    this.user = user;
+  _UserDetails(this.user);
+
+  @override
+  _UserDetailsState createState() {
+    return _UserDetailsState();
   }
+}
 
-  void handleCheckboxChange(bool isChecked) {}
+class _UserDetailsState extends State<_UserDetails> {
+  bool _checked;
+
+  void handleCheckboxChange(bool isChecked) {
+    setState(() {
+      _checked = isChecked;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +139,7 @@ class _UserDetails extends StatelessWidget {
           children: <Widget>[
             Container(
               child: Checkbox(
-                value: false,
+                value: _checked == true,
                 onChanged: this.handleCheckboxChange,
               ),
             ),
@@ -124,10 +148,10 @@ class _UserDetails extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(this.user.name,
+                  Text(this.widget.user.name,
                       style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text(this.user.accountNumber, textAlign: TextAlign.left),
-                  Text(this.user.location, textAlign: TextAlign.left)
+                  Text(this.widget.user.accountNumber, textAlign: TextAlign.left),
+                  Text(this.widget.user.location, textAlign: TextAlign.left)
                 ],
               ),
             )),
@@ -146,6 +170,7 @@ class _UserDetails extends StatelessWidget {
                       Column(
                         children: <Widget>[
                           IconButton(
+                            onPressed: () {},
                             icon: Icon(Icons.refresh),
                           )
                         ],

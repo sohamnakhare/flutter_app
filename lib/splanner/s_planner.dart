@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/splanner/s_planner_plan.dart';
-import 'package:flutter_app/splanner/s_planner_schedule.dart';
+import 'package:flutter_app/splanner/plan/s_planner_plan.dart';
+import 'package:flutter_app/splanner/schedule/s_planner_schedule.dart';
 
 class SPlanner extends StatelessWidget {
   @override
@@ -34,14 +34,8 @@ class SPlanner extends StatelessWidget {
           ),
           body: new TabBarView(
             children: <Widget>[
-              new Column(
-                children: <Widget>[
-                    SPlan(),
-                ],
-              ),
-              new Column(
-                children: <Widget>[SSchedule()],
-              )
+              SPlan(),
+              SSchedule(),
             ],
           ),
         ),
