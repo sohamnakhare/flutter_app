@@ -6,7 +6,7 @@ class CollectionFilter extends StatelessWidget {
     return Column(
       children: <Widget>[
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
@@ -16,20 +16,20 @@ class CollectionFilter extends StatelessWidget {
                         margin: EdgeInsets.all(8),
                         child: RaisedButton(
                           onPressed: () {},
-                          child: Text('New allocation (7)'),
+                          child: Text('New alloc'),
                         )),
                     Container(
                       margin: EdgeInsets.all(8),
                       child: RaisedButton(
                         onPressed: () {},
-                        child: Text('PTP (5)'),
+                        child: Text('PTP'),
                       ),
                     ),
                     Container(
                       margin: EdgeInsets.all(8),
                       child: RaisedButton(
                         onPressed: () {},
-                        child: Text('Failure (4)'),
+                        child: Text('Failure'),
                       ),
                     )
                   ],
