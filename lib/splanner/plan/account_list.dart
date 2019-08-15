@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import '../../model/User.dart';
+import '../../model/Account.dart';
 
-class UserList extends StatelessWidget {
-  final List<User> users;
+class AccountList extends StatelessWidget {
+  final List<Account> accounts;
   final ScrollController _controller = new ScrollController();
 
-  UserList(this.users);
+  AccountList(this.accounts);
 
   @override
   Widget build(BuildContext context) {
-    return this.users == null
+    return this.accounts == null
         ? _NoDetailsFound()
         : ListView(
             shrinkWrap: true,
@@ -17,7 +17,7 @@ class UserList extends StatelessWidget {
             controller: _controller,
             padding: const EdgeInsets.all(20.0),
             children:
-                this.users.map((User user) => _UserDetails(user)).toList());
+                this.accounts.map((Account account) => _AccountDetails(account)).toList());
   }
 }
 
@@ -28,18 +28,18 @@ class _NoDetailsFound extends StatelessWidget {
   }
 }
 
-class _UserDetails extends StatefulWidget {
-  final User user;
+class _AccountDetails extends StatefulWidget {
+  final Account account;
 
-  _UserDetails(this.user);
+  _AccountDetails(this.account);
 
   @override
-  _UserDetailsState createState() {
-    return _UserDetailsState();
+  _AccountDetailsState createState() {
+    return _AccountDetailsState();
   }
 }
 
-class _UserDetailsState extends State<_UserDetails> {
+class _AccountDetailsState extends State<_AccountDetails> {
   String _timeSlot;
   bool _checked;
 
@@ -73,11 +73,11 @@ class _UserDetailsState extends State<_UserDetails> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(this.widget.user.name,
+                  Text(this.widget.account.name,
                       style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text(this.widget.user.accountNumber,
+                  Text(this.widget.account.accountNumber,
                       textAlign: TextAlign.left),
-                  Text(this.widget.user.location, textAlign: TextAlign.left)
+                  Text(this.widget.account.location, textAlign: TextAlign.left)
                 ],
               ),
             )),

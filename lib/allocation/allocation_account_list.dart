@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import '../model/User.dart';
-import '../userdetails/user_details_page.dart';
+import '../model/Allocation.dart';
+import '../account-details/account_details_page.dart';
 
-class CollectionUserList extends StatelessWidget {
-  final List<User> users;
+class AllocationAccountList extends StatelessWidget {
+  final List<Allocation> allocations;
 
-  CollectionUserList(this.users);
+  AllocationAccountList(this.allocations);
 
   @override
   Widget build(BuildContext context) {
-    return users == null
+    return (allocations == null || allocations.length == 0)
         ? _NoDetailsFound()
         : ListView(
             shrinkWrap: true,
             scrollDirection: Axis.vertical,
             padding: const EdgeInsets.all(20.0),
-            children: users.map((User user) => _UserDetails(user)).toList());
+            children: allocations.map((Allocation allocation) => _AccountDetails(allocation)).toList());
   }
 }
 
@@ -26,18 +26,18 @@ class _NoDetailsFound extends StatelessWidget {
   }
 }
 
-class _UserDetails extends StatefulWidget {
-  final User user;
+class _AccountDetails extends StatefulWidget {
+  final Allocation allocation;
 
-  _UserDetails(this.user);
+  _AccountDetails(this.allocation);
 
   @override
-  _UserDetailsState createState() {
-    return _UserDetailsState();
+  _AccountDetailsState createState() {
+    return _AccountDetailsState();
   }
 }
 
-class _UserDetailsState extends State<_UserDetails> {
+class _AccountDetailsState extends State<_AccountDetails> {
   bool _checked;
   bool _starred;
 
@@ -47,10 +47,10 @@ class _UserDetailsState extends State<_UserDetails> {
     });
   }
 
-  _handleUserTap(BuildContext context, User user) {
+  _handleAccountTap(BuildContext context, Allocation allocation) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => UserDetailsPage(user)),
+      MaterialPageRoute(builder: (context) => AccountDetailsPage(allocation)),
     );
   }
 
@@ -69,17 +69,15 @@ class _UserDetailsState extends State<_UserDetails> {
             ),
             Expanded(
                 child: InkWell(
-                    onTap: () => this._handleUserTap(context, this.widget.user),
+                    onTap: () => this._handleAccountTap(context, this.widget.allocation),
                     child: Container(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(this.widget.user.name,
+                          Text(this.widget.allocation.customerName,
                               style: TextStyle(fontWeight: FontWeight.bold)),
-                          Text(this.widget.user.accountNumber,
+                          Text(this.widget.allocation.accountNo,
                               textAlign: TextAlign.left),
-                          Text(this.widget.user.location,
-                              textAlign: TextAlign.left)
                         ],
                       ),
                     ))),
@@ -108,7 +106,7 @@ class _UserDetailsState extends State<_UserDetails> {
                   Row(
                     children: <Widget>[
                       Column(
-                        children: <Widget>[Text("03/10/2014")],
+                        children: <Widget>[Text(this.widget.allocation.endDate)],
                       )
                     ],
                   )

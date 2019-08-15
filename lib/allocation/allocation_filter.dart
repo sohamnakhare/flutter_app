@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CollectionFilter extends StatelessWidget {
+class AllocationFilter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -29,7 +29,7 @@ class CollectionFilter extends StatelessWidget {
                       margin: EdgeInsets.all(8),
                       child: RaisedButton(
                         onPressed: () {},
-                        child: Text('Failure'),
+                        child: Text('Broken PTP'),
                       ),
                     )
                   ],

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../model/User.dart';
+import '../../model/Account.dart';
 
 class SSchedule extends StatefulWidget {
   @override
@@ -9,12 +9,12 @@ class SSchedule extends StatefulWidget {
 }
 
 class _SScheduleState extends State<SSchedule> {
-  List<User> users;
+  List<Account> accounts;
 
   @override
   void initState() {
     super.initState();
-    users = User.getUsers();
+    accounts = Account.getAccounts();
   }
 
   @override
@@ -23,7 +23,7 @@ class _SScheduleState extends State<SSchedule> {
       children: <Widget>[
         _TimeFilter(),
         Expanded(
-          child: _ScheduleUserList(this.users),
+          child: _ScheduleAccountList(this.accounts),
         )
       ],
     );
@@ -84,22 +84,22 @@ class _TimeFilter extends StatelessWidget {
   }
 }
 
-class _ScheduleUserList extends StatelessWidget {
-  final List<User> users;
+class _ScheduleAccountList extends StatelessWidget {
+  final List<Account> accounts;
   final ScrollController _controller = new ScrollController();
 
-  _ScheduleUserList(this.users);
+  _ScheduleAccountList(this.accounts);
 
   @override
   Widget build(BuildContext context) {
-    return users == null
+    return accounts == null
         ? _NoDetailsFound()
         : ListView(
             shrinkWrap: true,
             physics: const AlwaysScrollableScrollPhysics(),
             controller: _controller,
             padding: const EdgeInsets.all(20.0),
-            children: users.map((User user) => _UserDetails(user)).toList());
+            children: accounts.map((Account account) => _AccountDetails(account)).toList());
   }
 }
 
@@ -110,18 +110,18 @@ class _NoDetailsFound extends StatelessWidget {
   }
 }
 
-class _UserDetails extends StatefulWidget {
-  final User user;
+class _AccountDetails extends StatefulWidget {
+  final Account account;
 
-  _UserDetails(this.user);
+  _AccountDetails(this.account);
 
   @override
-  _UserDetailsState createState() {
-    return _UserDetailsState();
+  _AccountDetailsState createState() {
+    return _AccountDetailsState();
   }
 }
 
-class _UserDetailsState extends State<_UserDetails> {
+class _AccountDetailsState extends State<_AccountDetails> {
   bool _checked;
 
   void handleCheckboxChange(bool isChecked) {
@@ -148,10 +148,10 @@ class _UserDetailsState extends State<_UserDetails> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(this.widget.user.name,
+                  Text(this.widget.account.name,
                       style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text(this.widget.user.accountNumber, textAlign: TextAlign.left),
-                  Text(this.widget.user.location, textAlign: TextAlign.left)
+                  Text(this.widget.account.accountNumber, textAlign: TextAlign.left),
+                  Text(this.widget.account.location, textAlign: TextAlign.left)
                 ],
               ),
             )),

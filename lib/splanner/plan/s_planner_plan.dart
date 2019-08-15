@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import './plan_filter.dart';
-import './user_list.dart';
-import '../../model/User.dart';
+import './account_list.dart';
+import '../../model/Account.dart';
 
 class SPlan extends StatefulWidget {
   @override
@@ -11,12 +11,12 @@ class SPlan extends StatefulWidget {
 }
 
 class _SPlanState extends State<SPlan> {
-  List<User> users;
+  List<Account> users;
 
   @override
   void initState() {
     super.initState();
-    this.users = User.getUsers();
+    this.users = Account.getAccounts();
   }
 
   @override
@@ -25,7 +25,7 @@ class _SPlanState extends State<SPlan> {
       children: <Widget>[
         PlanFilter(),
         Expanded(
-          child: UserList(this.users),
+          child: AccountList(this.users),
         )
       ],
     );

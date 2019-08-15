@@ -6,20 +6,36 @@
 // connected to a callback that increments a counter.
 
 import 'package:flutter/material.dart';
-import 'login/login_page.dart';
+import 'mobile-number/mobile_number_page.dart';
+import 'package:redux/redux.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'redux/store/reducer.dart';
+import 'redux/store/AppState.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  final Store<AppState> store =
+      Store<AppState>(appReducer, initialState: AppState.initial());
+
+  runApp(MyApp(store));
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+
+  final Store<AppState> store;
+
+  MyApp(this.store);
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Code Sample for material.Scaffold',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: LoginPage(),
-    );
+    return StoreProvider<AppState>(
+        store: this.store,
+        child: MaterialApp(
+          title: 'Flutter Code Sample for material.Scaffold',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          home: MobileNumberPage(),
+        ));
   }
 }

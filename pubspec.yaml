@@ -14,14 +14,19 @@ description: A new Flutter application.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  flt_telephony_info: ^0.1.2
   datetime_picker_formfield: ^0.1.8
   image_picker: ^0.6.0
   bidirectional_scroll_view: ^0.0.7
+  http: ^0.12.0+2
+  flutter_redux: ^0.5.3
+  redux: ^3.0.0
+  pin_view: ^1.0.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

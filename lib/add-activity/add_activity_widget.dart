@@ -1,24 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../form-fields/mcol_dropdown_form_field.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
-import '../model/User.dart';
-import '../collection/collection_page.dart';
+import '../model/Allocation.dart';
+import './ActivityPayload.dart';
+import '../allocation/allocation_page.dart';
+import './add_activity_api.dart';
+import '../app_constants.dart' as constants;
 
-class NonPayment extends StatefulWidget {
-  final User user;
+class AddActivity extends StatefulWidget {
+  final Allocation allocation;
+  final String authToken;
 
-  NonPayment(this.user);
+  AddActivity(this.allocation, this.authToken);
 
   @override
-  _NonPaymentState createState() {
-    return _NonPaymentState();
+  _AddActivityState createState() {
+    return _AddActivityState();
   }
 }
 
-class _NonPaymentState extends State<NonPayment> {
+class _AddActivityState extends State<AddActivity> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-  List<String> _reasons = <String>['', 'PTP', 'Not paying'];
-  String _reason = '';
+  List<String> _dispositionCodes = <String>[
+    '',
+    "CB (Call Back)",
+    "CPD (Claims Paid)",
+    "DIS (Dispute)",
+    "Legal",
+    "LM (Left Message)",
+    "NC (No Contact)",
+    "OS (Out Station)",
+    "PTP (Promise to pay)",
+    "RNR (Ringing no Response)",
+    "RTP (Refuse to Pay)",
+    "Skip",
+    "SS (Successfully Settled)"
+  ];
+  String _dispositionCode = '';
+  List<String> _activities = <String>[
+    '',
+    'MoveToField',
+    'MoveToCalling',
+    'CapturePTP',
+    'MoveToSupervisor',
+    'MarkAsSkip',
+    'MarkAsLegal',
+    'MarkNonContactable'
+  ];
+  String _activity;
   final _remarksController = TextEditingController();
   final formats = {
     InputType.both: DateFormat("EEEE, MMMM d, yyyy 'at' h:mma"),
@@ -32,27 +62,31 @@ class _NonPaymentState extends State<NonPayment> {
 
   void _handleSubmit(BuildContext context) {
     if (_formKey.currentState.validate()) {
-      _showDialog(context);
+      AddActivityApi activityApi =
+          AddActivityApi(constants.apiBaseUrl, this.widget.authToken);
+      ActivityPayload payload = ActivityPayload(
+          allocDetailId: this.widget.allocation.id,
+          dispositionCode: _dispositionCode,
+          activity: _activity,
+          remarks: _remarksController.text,
+          ptpDate: date);
+      activityApi.savePayment(payload.toMap()).then((res) {
+        _showDialog(context);
+      }).catchError((Object error) {
+        print(error.toString());
+      });
     }
   }
 
   void _showDialog(BuildContext context) {
     // flutter defined function
-    var content = _reason == 'PTP'
-        ? 'PTP date of ' +
-            date.day.toString() +
-            '/' +
-            date.month.toString() +
-            '/' +
-            date.year.toString() +
-            ' received for loan number 12233322'
-        : 'Customer not ready to pay';
+    var content = 'Activity added successfully.';
     showDialog(
       context: context,
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: new Text(_reason + " confirmation"),
+          title: new Text(_dispositionCode + " confirmation"),
           content: new Text(content),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
@@ -61,7 +95,7 @@ class _NonPaymentState extends State<NonPayment> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CollectionPage()),
+                  MaterialPageRoute(builder: (context) => AllocationPage()),
                 );
               },
             ),
@@ -69,6 +103,20 @@ class _NonPaymentState extends State<NonPayment> {
         );
       },
     );
+  }
+
+  _handleDispositionCodeChange(newValue, FormFieldState state) {
+    setState(() {
+      _dispositionCode = newValue;
+      state.didChange(newValue);
+    });
+  }
+
+  _handleActivityChange(newValue, FormFieldState state) {
+    setState(() {
+      _activity = newValue;
+      state.didChange(newValue);
+    });
   }
 
   @override
@@ -81,58 +129,25 @@ class _NonPaymentState extends State<NonPayment> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  new FormField(validator: (value) {
-                    if (value == null || value == '') {
-                      return 'Please select non payment reason';
-                    }
-                  }, builder: (FormFieldState state) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        InputDecorator(
-                            decoration: InputDecoration(
-                              labelText: 'Reason',
-                            ),
-                            isEmpty: _reason == '',
-                            child: new DropdownButtonHideUnderline(
-                              child: new DropdownButton(
-                                value: _reason,
-                                isDense: true,
-                                onChanged: (String newValue) {
-                                  setState(() {
-                                    _reason = newValue;
-                                    state.didChange(newValue);
-                                  });
-                                },
-                                items: _reasons.map((String value) {
-                                  return new DropdownMenuItem(
-                                    value: value,
-                                    child: new Text(value),
-                                  );
-                                }).toList(),
-                              ),
-                            )),
-                        SizedBox(height: 5.0),
-                        Text(
-                          state.hasError ? state.errorText : '',
-                          style: TextStyle(
-                              color: Colors.redAccent.shade700, fontSize: 12.0),
-                        )
-                      ],
-                    );
-                  }),
+                  MColDropdownFormField("Activity", _handleActivityChange,
+                      _activity, _activities),
+                  MColDropdownFormField(
+                      "Disposition codes",
+                      _handleDispositionCodeChange,
+                      _dispositionCode,
+                      _dispositionCodes),
                   TextFormField(
                     validator: (value) {
                       if (value.isEmpty) {
-                        return 'Please enter remarks';
+                        return 'Please enter your feedback';
                       }
                     },
                     controller: _remarksController,
-                    decoration: InputDecoration(labelText: 'Remarks'),
+                    decoration: InputDecoration(labelText: 'Feedback'),
                     keyboardType: TextInputType.multiline,
                     maxLines: 2,
                   ),
-                  (_reason == 'PTP')
+                  (_dispositionCode == 'PTP (Promise to pay)')
                       ? DateTimePickerFormField(
                           inputType: inputType,
                           format: formats[inputType],
