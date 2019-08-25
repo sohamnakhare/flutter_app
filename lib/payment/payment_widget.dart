@@ -26,20 +26,30 @@ class _PaymentState extends State<PaymentWidget> {
   List<String> _paymentModes = <String>['', 'Cash', 'Cheque', 'DD'];
   List<String> _banks = <String>['', 'ICICI', 'SBI', 'AXIS', 'HDFC'];
   List<String> _payees = <String>['', 'Self', 'ThirdParty'];
+  List<String> _relations = <String>[
+    '',
+    'Brother',
+    'Father',
+    'Husband',
+    'Mother',
+    'Sister',
+    'Wife'
+  ];
+
   final _amountController = TextEditingController();
-  final _chequeController = TextEditingController();
+  final _imageController = TextEditingController();
   final _nameController = TextEditingController();
-  final _relationController = TextEditingController();
   String _paymentMode = '';
   String _bank = '';
   String _payee = '';
-  File _chequeImage;
+  String _relation = '';
+  File _paymentImage;
 
-  Future getChequeImage() async {
+  Future getPaymentImage() async {
     var image = await ImagePicker.pickImage(source: ImageSource.camera);
 
     setState(() {
-      _chequeImage = image;
+      _paymentImage = image;
     });
   }
 
@@ -51,12 +61,14 @@ class _PaymentState extends State<PaymentWidget> {
       PaymentPayload payload = PaymentPayload(
           allocDetailId: alloc.id,
           amount: double.parse(_amountController.text),
+          accountNumber: alloc.accountNo,
           paymentMode: _paymentMode,
           payeeType: _payee,
-          payeeRelation: _relationController.text,
+          payeeRelation:
+              _relation == '' ? '' : _relations.indexOf(_relation).toString(),
           payeeName: _nameController.text,
-          denomination: '100',
-          allocDetail: alloc);
+          product: alloc.product,
+          dataSource: alloc.dataSource);
       paymentApi.savePayment(payload.toMap()).then((res) {
         _showDialog(context);
       }).catchError((Object error) {
@@ -113,6 +125,13 @@ class _PaymentState extends State<PaymentWidget> {
     });
   }
 
+  _handlePayeeRelationChange(newValue, state) {
+    setState(() {
+      _relation = newValue;
+      state.didChange(newValue);
+    });
+  }
+
   _handleBankChange(newValue, state) {
     setState(() {
       _bank = newValue;
@@ -133,10 +152,19 @@ class _PaymentState extends State<PaymentWidget> {
                   TextFormField(
                     validator: (value) {
                       if (value.isEmpty) {
+                        return 'Please enter the receipt  number';
+                      }
+                    },
+                    decoration: InputDecoration(labelText: 'Receipt number'),
+                  ),
+                  TextFormField(
+                    validator: (value) {
+                      if (value.isEmpty) {
                         return 'Please enter TAD';
                       }
                     },
-                    initialValue: this.widget.allocation.totalDue.toString(),
+                    initialValue:
+                        this.widget.allocation.outstandingAmount.toString(),
                     decoration: InputDecoration(labelText: 'TAD'),
                   ),
                   TextFormField(
@@ -151,34 +179,12 @@ class _PaymentState extends State<PaymentWidget> {
                   MColDropdownFormField("Payment mode",
                       _handlePaymentModeChange, _paymentMode, _paymentModes),
                   if (_paymentMode == 'Cheque')
-                    TextFormField(
-                      controller: _chequeController,
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter cheque number';
-                        }
-                      },
-                      decoration: InputDecoration(
-                          prefixIcon: IconButton(
-                            icon: Icon(Icons.camera_alt),
-                            onPressed: this.getChequeImage,
-                          ),
-                          labelText: 'Cheque number'),
-                    ),
-                  if (_paymentMode == 'Cheque')
                     MColDropdownFormField(
                         "Bank", _handleBankChange, _bank, _banks),
                   MColDropdownFormField(
                       "Payee", _handlePayeeChange, _payee, _payees),
-                  TextFormField(
-                    controller: _relationController,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Please enter relation';
-                      }
-                    },
-                    decoration: InputDecoration(labelText: 'Relation'),
-                  ),
+                  MColDropdownFormField("Relation", _handlePayeeRelationChange,
+                      _relation, _relations),
                   TextFormField(
                     controller: _nameController,
                     validator: (value) {
@@ -187,6 +193,20 @@ class _PaymentState extends State<PaymentWidget> {
                       }
                     },
                     decoration: InputDecoration(labelText: 'Name'),
+                  ),
+                  TextFormField(
+                    controller: _imageController,
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter name for the image';
+                      }
+                    },
+                    decoration: InputDecoration(
+                        prefixIcon: IconButton(
+                          icon: Icon(Icons.camera_alt),
+                          onPressed: this.getPaymentImage,
+                        ),
+                        labelText: 'Image title'),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

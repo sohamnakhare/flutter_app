@@ -1,16 +1,16 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:async';
-import '../model/Activity.dart';
+import '../model/PTP.dart';
 
-class ViewActivityApi {
+class PTPApi {
   final String baseUrl;
   final String authToken;
 
-  ViewActivityApi(this.baseUrl, this.authToken);
+  PTPApi(this.baseUrl, this.authToken);
 
-  Future<List<Activity>> getActivitiesByAllocId(int allocId) async {
-    var url = baseUrl + 'AllocActivityApi/list/$allocId';
+  Future<List<PTP>> getPTPs() async {
+    var url = baseUrl + 'AllocActivityApi/ptpCases';
     final response = await http
         .get(url, headers: {'Authorization': 'Bearer ' + this.authToken});
 
@@ -18,10 +18,10 @@ class ViewActivityApi {
       // If the call to the server was successful, parse the JSON.
       print(response.body.toString());
       Iterable l = json.decode(response.body);
-      List<Activity> activities =
-          l.map((model) => Activity.fromJson(model)).toList();
-      return activities;
+      List<PTP> ptps = l.map((model) => PTP.fromJson(model)).toList();
+      return ptps;
     } else {
+      print(response.body.toString());
       // If that call was not successful, throw an error.
       throw Exception('Failed to load allocations');
     }

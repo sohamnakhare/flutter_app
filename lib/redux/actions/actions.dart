@@ -1,10 +1,13 @@
 import '../../model/Allocation.dart';
 import '../../model/Payment.dart';
 import '../../model/Activity.dart';
+import '../../model/PTP.dart';
+import '../../model/Report.dart';
 
 
 class StoreMobileNumber {
   final String mobileNumber;
+
   StoreMobileNumber(this.mobileNumber);
 }
 
@@ -36,4 +39,34 @@ class StoreActivities {
   final List<Activity> activities;
 
   StoreActivities(this.activities);
+}
+
+class StorePTPs {
+  final List<PTP> ptps;
+
+  StorePTPs(this.ptps);
+}
+
+class StoreSelectedPTPFilter {
+  final String selectedPTPFilter;
+
+  StoreSelectedPTPFilter(this.selectedPTPFilter);
+}
+
+class StoreProducts {
+  final List<String> products;
+
+  StoreProducts(this.products);
+}
+
+class StoreSelectedProduct {
+  final String selectedProduct;
+
+  StoreSelectedProduct(this.selectedProduct);
+}
+
+class StoreReport {
+  final Report report;
+
+  StoreReport(this.report);
 }

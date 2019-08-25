@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../model/Allocation.dart';
 import '../model/Account.dart';
-import './allocation_filter.dart';
 import './allocation_account_list.dart';
 
 class AllocationWidget extends StatelessWidget {
@@ -14,7 +13,6 @@ class AllocationWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        AllocationFilter(),
         Expanded(
           child: AllocationAccountList(allocations),
         )

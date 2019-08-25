@@ -1,18 +1,20 @@
 class Report {
-  String parameter;
-  int caseCount;
-  double amount;
-  int actual;
-  int target;
+  final num allocatedCount;
+  final num collectedCount;
+  final num allocatedAmount;
+  final num collectedAmount;
 
-  Report(this.parameter, this.caseCount, this.amount, this.actual, this.target);
+  Report(
+      {this.allocatedCount,
+      this.collectedAmount,
+      this.allocatedAmount,
+      this.collectedCount});
 
-  static getReport() {
-    return [
-      Report('RB', 10, 35000, 70, 70),
-      Report('RF', 5, 45000, 20, 20),
-      Report('Stab', 15, 15000, 10, 10),
-      Report('Norm', 05, 10000, 30, 30),
-    ];
+  factory Report.fromJson(Map<String, dynamic> model) {
+    return Report(
+        allocatedCount: model["allocatedCount"],
+        collectedAmount: model["collectedAmount"],
+        allocatedAmount: model["allocatedAmount"],
+        collectedCount: model["collectedCount"]);
   }
 }

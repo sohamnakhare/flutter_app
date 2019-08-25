@@ -24,7 +24,7 @@ class AccountDetails extends StatelessWidget {
                   ),
                   TextFormField(
                     keyboardType: TextInputType.number,
-                    initialValue: this.allocation.totalDue.toString(),
+                    initialValue: this.allocation.outstandingAmount.toString(),
                     decoration: InputDecoration(labelText: 'TAD'),
                   ),
                   TextFormField(

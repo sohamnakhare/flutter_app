@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
 import '../form-fields/mcol_dropdown_form_field.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import '../model/Allocation.dart';
@@ -49,7 +51,9 @@ class _AddActivityState extends State<AddActivity> {
     'MarkNonContactable'
   ];
   String _activity;
+  File _activityImage;
   final _remarksController = TextEditingController();
+  final _imageController = TextEditingController();
   final formats = {
     InputType.both: DateFormat("EEEE, MMMM d, yyyy 'at' h:mma"),
     InputType.date: DateFormat('yyyy-MM-dd'),
@@ -59,6 +63,15 @@ class _AddActivityState extends State<AddActivity> {
   InputType inputType = InputType.both;
   bool editable = true;
   DateTime date;
+
+
+  Future getActivityImage() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+
+    setState(() {
+      _activityImage = image;
+    });
+  }
 
   void _handleSubmit(BuildContext context) {
     if (_formKey.currentState.validate()) {
@@ -162,6 +175,20 @@ class _AddActivityState extends State<AddActivity> {
                             }
                           })
                       : Container(),
+                  TextFormField(
+                    controller: _imageController,
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter name for the image';
+                      }
+                    },
+                    decoration: InputDecoration(
+                        prefixIcon: IconButton(
+                          icon: Icon(Icons.camera_alt),
+                          onPressed: this.getActivityImage,
+                        ),
+                        labelText: 'Image title'),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,

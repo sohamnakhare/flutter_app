@@ -1,42 +1,38 @@
 import 'package:flutter/material.dart';
 import '../model/PTP.dart';
+import './ptp_filters.dart';
+import '../app_constants.dart' as constants;
 
-class PTPList extends StatelessWidget {
-  final List<PTP> ptps = PTP.getPTPs();
+class PTPWidget extends StatelessWidget {
+  final List<PTP> ptps;
+  final String selectedPTPFilter;
+  final Function onPTPFilterSelect;
+
+  PTPWidget(this.ptps, this.selectedPTPFilter, this.onPTPFilterSelect);
 
   @override
   Widget build(BuildContext context) {
-    return ptps == null
-        ? _NoDetailsFound()
-        : ListView(
-            shrinkWrap: true,
-            scrollDirection: Axis.vertical,
-            padding: const EdgeInsets.all(20.0),
-            children: ptps.map((PTP ptp) => _PTPDetails(ptp)).toList());
+    return Column(
+            children: <Widget>[
+              PTPFilters(selectedPTPFilter, onPTPFilterSelect),
+              ListView(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  padding: const EdgeInsets.all(20.0),
+                  children: ptps.map((PTP ptp) => _PTPDetails(ptp)).toList())
+            ],
+          );
   }
 }
 
-class _NoDetailsFound extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Text("No data found");
-  }
-}
-
-class _PTPDetails extends StatefulWidget {
+class _PTPDetails extends StatelessWidget {
   final PTP ptp;
 
   _PTPDetails(this.ptp);
 
   @override
-  _PTPDetailsState createState() {
-    return _PTPDetailsState();
-  }
-}
-
-class _PTPDetailsState extends State<_PTPDetails> {
-  @override
   Widget build(BuildContext context) {
+    DateTime ptpDate = DateTime.parse(ptp.ptpDate);
     return Container(
         child: Column(
       children: <Widget>[
@@ -57,27 +53,16 @@ class _PTPDetailsState extends State<_PTPDetails> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Text(
-                            this.widget.ptp.timeSlot[0],
+                            ptpDate.day.toString() +
+                                " " +
+                                constants.mmm[ptpDate.month - 1],
                             style: TextStyle(
                               fontSize: 18,
-                              fontWeight: FontWeight.w300,
+                              fontWeight: FontWeight.bold,
                             ),
                           )
                         ],
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            this.widget.ptp.timeSlot[1],
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          )
-                        ],
-                      )
                     ],
                   ),
                   Expanded(
@@ -87,14 +72,14 @@ class _PTPDetailsState extends State<_PTPDetails> {
                             children: <Widget>[
                               Row(
                                 children: <Widget>[
-                                  Text(this.widget.ptp.accountName,
+                                  Text(this.ptp.customerName,
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
+                                          fontWeight: FontWeight.w600)),
                                 ],
                               ),
                               Row(
                                 children: <Widget>[
-                                  Text(this.widget.ptp.accountNumber,
+                                  Text(this.ptp.accountNo,
                                       textAlign: TextAlign.left),
                                 ],
                               )

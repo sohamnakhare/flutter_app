@@ -19,15 +19,17 @@ class AllocationApi {
       // If the call to the server was successful, parse the JSON.
       Iterable l = json.decode(response.body);
       List<Allocation> allocations =
-      l.map((model) => Allocation.fromJson(model)).toList();
+          l.map((model) => Allocation.fromJson(model)).toList();
+      print(allocations.length);
       return allocations;
     } else {
+      print(response.toString());
       // If that call was not successful, throw an error.
       throw Exception('Failed to load allocations');
     }
   }
 
-  Future <Allocation> getAllocationDetailsById(int allocId) async {
+  Future<Allocation> getAllocationDetailsById(int allocId) async {
     var url = baseUrl + 'AllocDetailApi/$allocId';
     final response = await http
         .get(url, headers: {'Authorization': 'Bearer ' + this.authToken});
@@ -40,5 +42,4 @@ class AllocationApi {
       throw Exception('Failed to load allocations');
     }
   }
-
 }

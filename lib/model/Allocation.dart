@@ -5,7 +5,7 @@ class Allocation {
   final String startDate;
   final String endDate;
   final String product;
-  final double totalDue;
+  final double outstandingAmount;
   final String dataSource;
   final String allocStatus;
   final String accountStatus;
@@ -21,7 +21,7 @@ class Allocation {
       this.startDate,
       this.endDate,
       this.product,
-      this.totalDue,
+      this.outstandingAmount,
       this.dataSource,
       this.accountStatus,
       this.allocatedFileDataId,
@@ -38,7 +38,7 @@ class Allocation {
         startDate: model['startdate'],
         endDate: model['endDate'],
         product: model['product'],
-        totalDue: model['totalDue'],
+        outstandingAmount: model['outstandingAmount'],
         dataSource: model['dataSource'],
         accountStatus: model['accountStatus'],
         allocatedFileDataId: model['allocatedFileDataId'],

@@ -1,20 +1,25 @@
 class PTP {
-  String accountName;
-  String accountNumber;
-  List<String> timeSlot;
+  int id;
+  int allocDetailId;
+  String activity;
+  String dispositionCode;
+  String remarks;
+  String ptpDate;
+  String customerName;
+  String accountNo;
 
-  PTP(this.accountName, this.accountNumber, this.timeSlot);
+  PTP(this.id, this.allocDetailId, this.activity, this.dispositionCode,
+      this.remarks, this.ptpDate, this.customerName, this.accountNo);
 
-  static List<PTP> getPTPs() {
-    return [
-      PTP("Piyush", "PUN00000013980802", ["5 Jul", "09:30 am"]),
-      PTP("Suresh", "PUN00000013980802", ["5 Jul", "09:30 am"]),
-      PTP("Ramesh", "PUN00000013980802", ["5 Jul", "09:30 am"]),
-      PTP("John", "PUN00000013980802", ["5 Jul", "09:30 am"]),
-      PTP("Wasim", "PUN00000013980802", ["5 Jul", "09:30 am"]),
-      PTP("Radha", "PUN00000013980802", ["5 Jul", "09:30 am"]),
-      PTP("Rohit", "PUN00000013980802", ["5 Jul", "09:30 am"]),
-      PTP("Sumit", "PUN00000013980802", ["5 Jul", "09:30 am"]),
-    ];
+  factory PTP.fromJson(Map<String, dynamic> model) {
+    return PTP(
+        model["id"],
+        model["allocDetailId"],
+        model["activity"],
+        model["dispositionCode"],
+        model["remarks"],
+        model["ptpDate"],
+        "Piyush Bhandari",
+        "987641523");
   }
 }

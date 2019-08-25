@@ -1,27 +1,25 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:async';
-import '../model/Activity.dart';
+import '../model/Report.dart';
 
-class ViewActivityApi {
+class ReportApi {
   final String baseUrl;
   final String authToken;
 
-  ViewActivityApi(this.baseUrl, this.authToken);
+  ReportApi(this.baseUrl, this.authToken);
 
-  Future<List<Activity>> getActivitiesByAllocId(int allocId) async {
-    var url = baseUrl + 'AllocActivityApi/list/$allocId';
+  Future<Report> getReportForProduct(String product) async {
+    var url = baseUrl + 'AllocDetailApi/summary/$product';
     final response = await http
         .get(url, headers: {'Authorization': 'Bearer ' + this.authToken});
 
     if (response.statusCode == 200) {
       // If the call to the server was successful, parse the JSON.
-      print(response.body.toString());
-      Iterable l = json.decode(response.body);
-      List<Activity> activities =
-          l.map((model) => Activity.fromJson(model)).toList();
-      return activities;
+      Report report = Report.fromJson(json.decode(response.body));
+      return report;
     } else {
+      print(response.body.toString());
       // If that call was not successful, throw an error.
       throw Exception('Failed to load allocations');
     }

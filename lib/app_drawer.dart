@@ -6,22 +6,6 @@ import './reports/reports_page.dart';
 import './profile/profile_page.dart';
 
 class AppDrawer extends StatelessWidget {
-  void setPreferredOrientationHorizontal() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
-    ]);
-  }
-
-  void resetPreferredOrientation() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
-  }
-
   void _handleDrawerHeaderPress(BuildContext context) {
     Navigator.push(
       context,
@@ -52,7 +36,6 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.credit_card),
             title: Text('Allocation'),
             onTap: () {
-              this.resetPreferredOrientation();
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => AllocationPage()),
@@ -63,7 +46,6 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.schedule),
             title: Text('PTP'),
             onTap: () {
-              this.resetPreferredOrientation();
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => PTPPage()),
@@ -74,7 +56,6 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.table_chart),
             title: Text('Reports'),
             onTap: () {
-              this.setPreferredOrientationHorizontal();
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => ReportWidget()),
@@ -85,7 +66,6 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.exit_to_app),
             title: Text('Logout'),
             onTap: () {
-              this.resetPreferredOrientation();
               Navigator.popUntil(
                   context, ModalRoute.withName(Navigator.defaultRouteName));
             },

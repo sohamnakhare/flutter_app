@@ -1,162 +1,85 @@
 import 'package:flutter/material.dart';
-import '../app_drawer.dart';
-import 'package:bidirectional_scroll_view/bidirectional_scroll_view.dart';
+import 'package:redux/redux.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import '../model/Report.dart';
+import '../redux/store/AppState.dart';
+import './reports_widget.dart';
+import '../redux/actions/actions.dart';
+import '../app_drawer.dart';
+import '../api/enum_master_api.dart';
+import './reports_api.dart';
+import '../app_constants.dart' as constants;
 
-class ReportWidget extends StatefulWidget {
-  @override
-  ReportWidgetState createState() => ReportWidgetState();
-}
-
-class ReportWidgetState extends State<ReportWidget> {
-  List<Report> reports;
-  bool sort;
-
-  @override
-  void initState() {
-    super.initState();
-    reports = Report.getReport();
-
-  }
-
-  dataBody() {
-    return BidirectionalScrollViewPlugin(
-      child: DataTable(
-        columns: [
-          DataColumn(
-            label: Text("Parameter"),
-          ),
-          DataColumn(
-            label: Text("Case count"),
-          ),
-          DataColumn(
-            label: Text("Amount"),
-          ),
-          DataColumn(
-            label: Text("Actual %"),
-          ),
-          DataColumn(
-            label: Text("Target %"),
-          ),
-        ],
-        rows: reports
-            .map(
-              (report) => DataRow(cells: [
-                    DataCell(
-                      Text(report.parameter),
-                    ),
-                    DataCell(
-                      Text(report.caseCount.toString()),
-                    ),
-                    DataCell(
-                      Text(report.amount.toString()),
-                    ),
-                    DataCell(
-                      Text(report.actual.toString()),
-                    ),
-                    DataCell(
-                      Text(report.target.toString()),
-                    ),
-                  ]),
-            )
-            .toList(),
-      ),
-    );
-  }
-
+class ReportWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: AppDrawer(),
-      appBar: AppBar(
-        title: Row(
-          children: <Widget>[
-            Icon(Icons.person),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                  child: Text("Employee Details"),
+    return StoreConnector<AppState, _ViewModel>(
+        onInit: (store) {
+          EnumMasterApi enumMasterApi =
+              EnumMasterApi(constants.apiBaseUrl, store.state.authState.token);
+          enumMasterApi.getProducts().then((res) {
+            store.dispatch(StoreProducts(res));
+          }).catchError((Object error) {
+            print(error.toString());
+          });
+        },
+        converter: (Store<AppState> store) => _ViewModel.create(store),
+        builder: (BuildContext context, _ViewModel viewModel) {
+          return Scaffold(
+              drawer: AppDrawer(),
+              appBar: AppBar(
+                title: Row(
+                  children: <Widget>[
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                          child: Text("Report"),
+                        ),
+                      ],
+                    )
+                  ],
                 ),
-              ],
-            )
-          ],
-        ),
-      ),
-      body: Column(
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.fromLTRB(8.0, 16, 8, 8),
-            child: Table(
-              children: [
-                TableRow(children: [
-                  Row(
-                    children: <Widget>[
-                      Text(
-                        "Name: ",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text("Piyush Bhandari"),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Text(
-                        "Bucket: ",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text("10"),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Text(
-                        "Period: ",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text("May-19"),
-                    ],
-                  )
-                ]),
-                TableRow(children: [
-                  Row(
-                    children: <Widget>[
-                      Text(
-                        "Product: ",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text("Car loan"),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Text(
-                        "Total due: ",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text("150000.00"),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Text(
-                        "Terrain: ",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text("Pune"),
-                    ],
-                  )
-                ]),
-              ],
-            ),
-          ),
-          Expanded(
-            child: dataBody(),
-          ),
-        ],
-      ),
-    );
+              ),
+              body: ReportsWidget(viewModel.products, viewModel.onProductSelect,
+                  viewModel.selectedProduct, viewModel.report));
+        });
+  }
+}
+
+class _ViewModel {
+  final String authToken;
+  final List<String> products;
+  final String selectedProduct;
+  final Report report;
+  final Function(String selectedProduct) onProductSelect;
+
+  _ViewModel(
+      {this.authToken,
+      this.products,
+      this.onProductSelect,
+      this.selectedProduct,
+      this.report});
+
+  factory _ViewModel.create(Store<AppState> store) {
+    _onProductSelect(String selectedProduct) {
+      store.dispatch(StoreSelectedProduct(selectedProduct));
+      ReportApi reportApi =
+          ReportApi(constants.apiBaseUrl, store.state.authState.token);
+      reportApi.getReportForProduct(selectedProduct).then((report) {
+        store.dispatch(StoreReport(report));
+      }).catchError((Object error) {
+        print(error.toString());
+      });
+    }
+
+    return _ViewModel(
+        authToken: store.state.authState.token,
+        products: store.state.reportState.products,
+        selectedProduct: store.state.reportState.selectedProduct,
+        onProductSelect: _onProductSelect,
+        report: store.state.reportState.report);
   }
 }

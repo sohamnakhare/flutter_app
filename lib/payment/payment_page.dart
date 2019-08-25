@@ -5,6 +5,9 @@ import './payment_widget.dart';
 import '../redux/store/AppState.dart';
 import '../model/Allocation.dart';
 import '../model/Payment.dart';
+import '../api/enum_master_api.dart';
+import '../app_constants.dart' as constants;
+
 
 class PaymentPage extends StatelessWidget {
   final Allocation allocation;
@@ -38,6 +41,12 @@ class PaymentPage extends StatelessWidget {
         ],
       )),
       body: StoreConnector<AppState, _ViewModel>(
+          onInit: (store) {
+            EnumMasterApi enumMasterApi = EnumMasterApi(constants.apiBaseUrl, store.state.authState.token);
+            enumMasterApi.getPayeeRelation().then((relations){
+              print(relations.toString());
+            });
+          },
           converter: (Store<AppState> store) => _ViewModel.create(store),
           builder: (BuildContext context, _ViewModel viewModel) {
             return PaymentWidget(allocation, viewModel.authToken);

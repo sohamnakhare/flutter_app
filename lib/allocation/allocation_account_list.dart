@@ -15,7 +15,9 @@ class AllocationAccountList extends StatelessWidget {
             shrinkWrap: true,
             scrollDirection: Axis.vertical,
             padding: const EdgeInsets.all(20.0),
-            children: allocations.map((Allocation allocation) => _AccountDetails(allocation)).toList());
+            children: allocations
+                .map((Allocation allocation) => _AccountDetails(allocation))
+                .toList());
   }
 }
 
@@ -39,7 +41,6 @@ class _AccountDetails extends StatefulWidget {
 
 class _AccountDetailsState extends State<_AccountDetails> {
   bool _checked;
-  bool _starred;
 
   handleCheckboxChange(bool isChecked) {
     setState(() {
@@ -69,7 +70,8 @@ class _AccountDetailsState extends State<_AccountDetails> {
             ),
             Expanded(
                 child: InkWell(
-                    onTap: () => this._handleAccountTap(context, this.widget.allocation),
+                    onTap: () =>
+                        this._handleAccountTap(context, this.widget.allocation),
                     child: Container(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,29 +89,12 @@ class _AccountDetailsState extends State<_AccountDetails> {
                   Row(
                     children: <Widget>[
                       Column(
-                        children: <Widget>[Text("2200.00")],
-                      )
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Column(
                         children: <Widget>[
-                          IconButton(
-                            onPressed: () {},
-                            icon: Icon(Icons.star_border),
-                          )
+                          Text(this.widget.allocation.outstandingAmount.toString())
                         ],
                       )
                     ],
                   ),
-                  Row(
-                    children: <Widget>[
-                      Column(
-                        children: <Widget>[Text(this.widget.allocation.endDate)],
-                      )
-                    ],
-                  )
                 ],
               ),
             )

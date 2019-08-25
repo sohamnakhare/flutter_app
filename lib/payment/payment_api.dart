@@ -35,6 +35,7 @@ class PaymentApi {
       // If the call to the server was successful, parse the JSON.
       return response;
     } else {
+      print(response.body.toString());
       // If that call was not successful, throw an error.
       throw Exception('Failed to save payment');
     }
